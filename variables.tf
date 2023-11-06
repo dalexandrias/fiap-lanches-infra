@@ -4,8 +4,8 @@ variable "region" {
 
 variable "environment" {
   description = "Deployment Environment"
-  default = "develop"
-  type = string
+  default     = "develop"
+  type        = string
 }
 
 variable "vpc_cidr" {
