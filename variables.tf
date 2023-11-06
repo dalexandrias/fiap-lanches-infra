@@ -4,6 +4,8 @@ variable "region" {
 
 variable "environment" {
   description = "Deployment Environment"
+  type: string
+  default: "develop"
 }
 
 variable "vpc_cidr" {
@@ -21,9 +23,4 @@ variable "private_subnets_cidr" {
   type        = list(any)
   description = "CIDR block for Private Subnet"
   default     = ["10.0.10.0/24"]
-}
-
-variable "availability_zones" {
-  type        = list(any)
-  description = "AZ in which all the resources will be deployed"
 }
