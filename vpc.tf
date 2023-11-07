@@ -30,7 +30,7 @@ resource "aws_eip" "nat_eip" {
 }
 
 # Public subnet
-resource "aws_subnet" "public_subnet" {
+resource "aws_subnet" "subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
   cidr_block              = element(var.public_subnets_cidr, count.index)
@@ -43,7 +43,7 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
-resource "aws_subnet" "public_subnet_2" {
+resource "aws_subnet" "subnet2" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
   cidr_block              = element(var.public_subnets_cidr, count.index)
@@ -102,7 +102,7 @@ resource "aws_route" "public_internet_gateway" {
 # Route table associations for both Public & Private Subnets
 resource "aws_route_table_association" "public" {
   count          = length(var.public_subnets_cidr)
-  subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
+  subnet_id      = element(aws_subnet.subnet.*.id, count.index)
   route_table_id = aws_route_table.public.id
 }
 
