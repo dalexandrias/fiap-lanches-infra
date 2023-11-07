@@ -3,7 +3,9 @@ name: 'Terraform-Develop'
 on:
   push:
     branches: [ "main" ]
-  pull_request:
+
+permissions:
+  pull-requests: write
 
 jobs:
   terraform:
