@@ -1,10 +1,20 @@
+variable "app_name" {
+  default = "fiap-lanches"
+  type    = string
+}
+
+variable "ecr_regitry_url" {
+  default = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches:latest"
+  type    = string
+}
+
 variable "region" {
   default = "us-east-1"
 }
 
 variable "environment" {
   description = "Deployment Environment"
-  default     = "preprod"
+  default     = "develop"
   type        = string
 }
 

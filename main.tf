@@ -12,131 +12,97 @@ provider "aws" {
   region = var.region
 }
 
-data "aws_availability_zones" "available" {
-  state = "available"
+# Create an ECS cluster
+resource "aws_ecs_cluster" "ecs_cluster" {
+  name = "${var.environment}-ecs-cluster"
 }
 
-resource "aws_vpc" "vpc" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
+  name = "${var.environment}-ecs-provider"
 
-  tags = {
-    Name        = "${var.environment}-vpc"
-    Environment = var.environment
+  auto_scaling_group_provider {
+    auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
+
+    managed_scaling {
+      maximum_scaling_step_size = 1000
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 3
+    }
   }
 }
 
-# Subnets
-# Internet Gateway para subnet publica, libera o acesso via internet
-resource "aws_internet_gateway" "ig" {
-  vpc_id = aws_vpc.vpc.id
-  tags = {
-    Name        = "${var.environment}-igw"
-    Environment = var.environment
+resource "aws_ecs_cluster_capacity_providers" "example" {
+  cluster_name = aws_ecs_cluster.ecs_cluster.name
+
+  capacity_providers = [aws_ecs_capacity_provider.ecs_capacity_provider.name]
+
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
   }
 }
 
-# Elastic-IP (eip) for NAT
-resource "aws_eip" "nat_eip" {
-  domain     = "vpc"
-  depends_on = [aws_internet_gateway.ig]
-}
-
-# Public subnet
-resource "aws_subnet" "public_subnet" {
-  vpc_id                  = aws_vpc.vpc.id
-  count                   = length(var.public_subnets_cidr)
-  cidr_block              = element(var.public_subnets_cidr, count.index)
-  availability_zone       = data.aws_availability_zones.available.names[0]
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-public-subnet"
-    Environment = "${var.environment}"
+# Define the ECS task definition for the service
+resource "aws_ecs_task_definition" "ecs_task_definition" {
+  family             = "${var.app_name}-ecs-task"
+  network_mode       = "awsvpc"
+  execution_role_arn = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
+  cpu                = 256
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
   }
+  container_definitions = jsonencode([
+    {
+      name      = "dockergs"
+      image     = var.ecr_regitry_url
+      cpu       = 256
+      memory    = 512
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort      = 8080
+          protocol      = "tcp"
+        }
+      ]
+    }
+  ])
 }
 
+# Define the ECS service that will run the task
+resource "aws_ecs_service" "ecs_service" {
+  name            = "${var.app_name}-ecs-service"
+  cluster         = aws_ecs_cluster.ecs_cluster.id
+  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
+  desired_count   = 2
 
-# Private Subnet
-resource "aws_subnet" "private_subnet" {
-  vpc_id                  = aws_vpc.vpc.id
-  count                   = length(var.private_subnets_cidr)
-  cidr_block              = element(var.private_subnets_cidr, count.index)
-  availability_zone       = data.aws_availability_zones.available.names[0]
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-private-subnet"
-    Environment = "${var.environment}"
-  }
-}
-
-
-# Routing tables to route traffic for Private Subnet
-resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.vpc.id
-
-  tags = {
-    Name        = "${var.environment}-private-route-table"
-    Environment = "${var.environment}"
-  }
-}
-
-# Routing tables to route traffic for Public Subnet
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.vpc.id
-
-  tags = {
-    Name        = "${var.environment}-public-route-table"
-    Environment = "${var.environment}"
-  }
-}
-
-# Route for Internet Gateway
-resource "aws_route" "public_internet_gateway" {
-  route_table_id         = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.ig.id
-}
-
-# Route table associations for both Public & Private Subnets
-resource "aws_route_table_association" "public" {
-  count          = length(var.public_subnets_cidr)
-  subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "private" {
-  count          = length(var.private_subnets_cidr)
-  subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
-  route_table_id = aws_route_table.private.id
-}
-
-# Default Security Group of VPC
-resource "aws_security_group" "default" {
-  name        = "${var.environment}-default-sg"
-  description = "Default SG to alllow traffic from the VPC"
-  vpc_id      = aws_vpc.vpc.id
-  depends_on = [
-    aws_vpc.vpc
-  ]
-
-  ingress {
-    from_port = "0"
-    to_port   = "0"
-    protocol  = "-1"
-    self      = true
+  network_configuration {
+    subnets         = [aws_subnet.private_subnet.id, aws_subnet.public_subnet.id]
+    security_groups = [aws_security_group.default.id]
   }
 
-  egress {
-    from_port = "0"
-    to_port   = "0"
-    protocol  = "-1"
-    self      = "true"
+  force_new_deployment = true
+  placement_constraints {
+    type = "distinctInstance"
   }
 
-  tags = {
-    Environment = "${var.environment}"
+  triggers = {
+    redeployment = timestamp()
   }
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
+    weight            = 100
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ecs_tg.arn
+    container_name   = "dockergs"
+    container_port   = 80
+  }
+
+  depends_on = [aws_autoscaling_group.ecs_asg]
 }
