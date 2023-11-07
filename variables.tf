@@ -4,7 +4,7 @@ variable "region" {
 
 variable "environment" {
   description = "Deployment Environment"
-  default     = "develop"
+  default     = "prod"
   type        = string
 }
 
