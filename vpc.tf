@@ -30,7 +30,7 @@ resource "aws_eip" "nat_eip" {
 }
 
 # Public subnet
-resource "aws_subnet" "public" {
+resource "aws_subnet" "subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
   cidr_block              = element(var.public_subnets_cidr, count.index)
@@ -43,7 +43,7 @@ resource "aws_subnet" "public" {
   }
 }
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "subnet2" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
   cidr_block              = element(var.public_subnets_cidr, count.index)
