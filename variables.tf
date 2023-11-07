@@ -1,10 +1,10 @@
-variable "region" {
+odvariable "region" {
   default = "us-east-1"
 }
 
 variable "environment" {
   description = "Deployment Environment"
-  default     = "prod"
+  default     = "preprod"
   type        = string
 }
 
