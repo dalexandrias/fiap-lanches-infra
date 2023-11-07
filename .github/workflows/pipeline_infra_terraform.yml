@@ -3,13 +3,14 @@ name: 'Terraform-Develop'
 on:
   push:
     branches: [ "main" ]
-  pull_request:
+
+permissions:
+  contents: write
 
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -46,7 +47,7 @@ jobs:
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
-         github-token: ${{ secrets.GIT_TOKEN }}
+         github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
