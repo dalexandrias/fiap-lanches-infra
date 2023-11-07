@@ -38,7 +38,7 @@ resource "aws_subnet" "subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-public-subnet"
+    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-public-subnet-1"
     Environment = "${var.environment}"
   }
 }
@@ -47,11 +47,11 @@ resource "aws_subnet" "subnet2" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
   cidr_block              = cidrsubnet(var.vpc_cidr, 8, 2)
-  availability_zone       = data.aws_availability_zones.available.names[0]
+  availability_zone       = data.aws_availability_zones.available.names[1]
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-public-subnet"
+    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-public-subnet-2"
     Environment = "${var.environment}"
   }
 }
@@ -66,7 +66,7 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-private-subnet"
+    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-private-subnet-1"
     Environment = "${var.environment}"
   }
 }
