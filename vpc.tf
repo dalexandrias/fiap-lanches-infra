@@ -33,7 +33,7 @@ resource "aws_eip" "nat_eip" {
 resource "aws_subnet" "subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
-  cidr_block              = element(var.public_subnets_cidr, count.index)
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, 1)
   availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = true
 
@@ -46,7 +46,7 @@ resource "aws_subnet" "subnet" {
 resource "aws_subnet" "subnet2" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
-  cidr_block              = element(var.public_subnets_cidr, count.index)
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, 2)
   availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = true
 
@@ -61,7 +61,7 @@ resource "aws_subnet" "subnet2" {
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.private_subnets_cidr)
-  cidr_block              = element(var.private_subnets_cidr, count.index)
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, 3)
   availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = false
 
