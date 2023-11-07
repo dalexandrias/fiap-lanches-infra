@@ -24,7 +24,7 @@ resource "aws_launch_template" "ecs_lt" {
     }
   }
 
-  user_data = filebase64("${path.module}/ecs.sh")
+  # user_data = filebase64("${path.module}/ecs.sh")
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
