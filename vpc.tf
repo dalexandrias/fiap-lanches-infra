@@ -51,7 +51,7 @@ resource "aws_subnet" "subnet2" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.environment}-${data.aws_availability_zones.available.names[0]}-public-subnet-2"
+    Name        = "${var.environment}-${data.aws_availability_zones.available.names[1]}-public-subnet-2"
     Environment = "${var.environment}"
   }
 }

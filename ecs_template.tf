@@ -3,7 +3,6 @@ resource "aws_launch_template" "ecs_lt" {
   image_id      = "ami-04215982dedb895b4"
   instance_type = "t2.micro"
 
-  key_name               = "ec2ecsglog"
   vpc_security_group_ids = [aws_security_group.default.id]
   iam_instance_profile {
     name = "ecsInstanceRole"
