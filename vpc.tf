@@ -134,7 +134,6 @@ resource "aws_security_group" "default" {
     protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
     self            = true
-    security_groups = [aws_security_group.default.id]
   }
 
   egress {
