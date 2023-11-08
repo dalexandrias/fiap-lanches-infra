@@ -17,37 +17,36 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.environment}-ecs-cluster"
 }
 
-resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
-  name = "${var.environment}-ecs-provider"
+# resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
+#   name = "${var.environment}-ecs-provider"
 
-  auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
+#   auto_scaling_group_provider {
+#     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
 
-    managed_scaling {
-      maximum_scaling_step_size = 1000
-      minimum_scaling_step_size = 1
-      status                    = "ENABLED"
-      target_capacity           = 3
-    }
-  }
-}
+#     managed_scaling {
+#       maximum_scaling_step_size = 1000
+#       minimum_scaling_step_size = 1
+#       status                    = "ENABLED"
+#       target_capacity           = 3
+#     }
+#   }
+# }
 
-resource "aws_ecs_cluster_capacity_providers" "example" {
-  cluster_name = aws_ecs_cluster.ecs_cluster.name
+# resource "aws_ecs_cluster_capacity_providers" "example" {
+#   cluster_name = aws_ecs_cluster.ecs_cluster.name
 
-  capacity_providers = [aws_ecs_capacity_provider.ecs_capacity_provider.name]
+#   capacity_providers = [aws_ecs_capacity_provider.ecs_capacity_provider.name]
 
-  default_capacity_provider_strategy {
-    base              = 1
-    weight            = 100
-    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
-  }
-}
+#   default_capacity_provider_strategy {
+#     base              = 1
+#     weight            = 100
+#     capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
+#   }
+# }
 
 # Define the ECS task definition for the service
 resource "aws_ecs_task_definition" "ecs_task_definition" {
   family             = "${var.app_name}-ecs-task"
-  network_mode       = "awsvpc"
   execution_role_arn = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
   cpu                = 256
   runtime_platform {
@@ -56,18 +55,49 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   }
   container_definitions = jsonencode([
     {
-      name      = "${var.app_name}-api"
-      image     = var.ecr_regitry_url
-      cpu       = 256
-      memory    = 512
-      essential = true
-      portMappings = [
+      "name" : "${var.app_name}-api",
+      "image" : var.ecr_regitry_url,
+      "cpu" : 0,
+      "memory" : 497,
+      "portMappings" : [
         {
-          containerPort = 8080
-          hostPort      = 8080
-          protocol      = "tcp"
+          "containerPort" : 8080,
+          "hostPort" : 8080,
+          "protocol" : "tcp"
         }
-      ]
+      ],
+      "essential" : true,
+      "environment" : [
+        {
+          "name" : "SPRING_DATASOURCE_USERNAME",
+          "value" : "fiap_lanches"
+        },
+        {
+          "name" : "WEBHOOK_URL",
+          "value" : "http://172.31.20.230:8081"
+        },
+        {
+          "name" : "SPRING_DATASOURCE_PASSWORD",
+          "value" : "w44JZd3d4BYQiNDhNLg4"
+        },
+        {
+          "name" : "SPRING_DATASOURCE_URL",
+          "value" : "jdbc:postgresql://fiaplanches.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
+        },
+        {
+          "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
+          "value" : "create"
+        }
+      ],
+      "logConfiguration" : {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-group" : "/ecs/task-fiap-lanches",
+          "awslogs-region" : "us-east-1",
+          "awslogs-stream-prefix" : "ecs"
+        },
+        "secretOptions" : []
+      }
     }
   ])
 }
@@ -93,10 +123,10 @@ resource "aws_ecs_service" "ecs_service" {
     redeployment = timestamp()
   }
 
-  capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
-    weight            = 100
-  }
+  # capacity_provider_strategy {
+  #   capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
+  #   weight            = 100
+  # }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_tg.arn

@@ -19,7 +19,7 @@ resource "aws_launch_template" "ecs_lt" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "ecs-instance"
+      Name = "${var.app_name}-ecs-instance"
     }
   }
 
@@ -53,7 +53,7 @@ resource "aws_lb" "ecs_alb" {
   subnets            = [element(aws_subnet.subnet.*.id, 0), element(aws_subnet.subnet2.*.id, 0)]
 
   tags = {
-    Name = "ecs-alb"
+    Name = "${var.app_name}-ecs-alb"
   }
 }
 
@@ -72,10 +72,17 @@ resource "aws_lb_target_group" "ecs_tg" {
   name        = "${var.environment}-ecs-target-group"
   port        = 8080
   protocol    = "HTTP"
-  target_type = "ip"
+  target_type = "instance"
   vpc_id      = aws_vpc.vpc.id
 
   health_check {
     path = "/"
   }
+}
+
+resource "aws_lb_target_group_attachment" "develop-alb-target-group" {
+
+  target_group_arn = aws_lb_target_group.ecs_tg.arn
+  target_id        = aws_launch_template.ecs_lt.id
+  port             = 8080
 }
