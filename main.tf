@@ -81,11 +81,12 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
 
 # Define the ECS service that will run the task
 resource "aws_ecs_service" "ecs_service" {
-  name            = "${var.app_name}-ecs-fargate"
-  cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+  name             = "${var.app_name}-ecs-fargate"
+  cluster          = aws_ecs_cluster.ecs_cluster.id
+  task_definition  = aws_ecs_task_definition.ecs_task_definition.arn
+  desired_count    = 1
+  launch_type      = "FARGATE"
+  platform_version = "1.4.0"
 
   network_configuration {
     subnets         = [element(aws_subnet.private_subnet.*.id, 0)]
