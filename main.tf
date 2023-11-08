@@ -23,6 +23,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   network_mode             = "awsvpc"
   execution_role_arn       = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
   cpu                      = 256
+  memory                   = 512
   requires_compatibilities = ["FARGATE"]
   runtime_platform {
     operating_system_family = "LINUX"
