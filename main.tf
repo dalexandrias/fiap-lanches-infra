@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   }
   container_definitions = jsonencode([
     {
-      name      = "dockergs"
+      name      = "${var.app_name}-api"
       image     = var.ecr_regitry_url
       cpu       = 256
       memory    = 512
