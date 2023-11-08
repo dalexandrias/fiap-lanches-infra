@@ -70,19 +70,25 @@ resource "aws_lb_listener" "ecs_alb_listener" {
 
 resource "aws_lb_target_group" "ecs_tg" {
   name        = "${var.environment}-ecs-target-group"
-  port        = 8080
+  port        = 80
   protocol    = "HTTP"
-  target_type = "instance"
+  target_type = "ip"
   vpc_id      = aws_vpc.vpc.id
 
   health_check {
-    path = "/"
+    healthy_threshold   = "3"
+    interval            = "90"
+    protocol            = "HTTP"
+    matcher             = "200-299"
+    timeout             = "20"
+    path                = "/"
+    unhealthy_threshold = "2"
   }
 }
 
-resource "aws_lb_target_group_attachment" "develop-alb-target-group" {
+# resource "aws_lb_target_group_attachment" "develop-alb-target-group" {
 
-  target_group_arn = aws_lb_target_group.ecs_tg.arn
-  target_id        = aws_launch_template.ecs_lt.id
-  port             = 8080
-}
+#   target_group_arn = aws_lb_target_group.ecs_tg.arn
+#   target_id        = aws_launch_template.ecs_lt.id
+#   port             = 8080
+# }

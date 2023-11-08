@@ -17,42 +17,18 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.environment}-ecs-cluster"
 }
 
-# resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
-#   name = "${var.environment}-ecs-provider"
-
-#   auto_scaling_group_provider {
-#     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
-
-#     managed_scaling {
-#       maximum_scaling_step_size = 1000
-#       minimum_scaling_step_size = 1
-#       status                    = "ENABLED"
-#       target_capacity           = 3
-#     }
-#   }
-# }
-
-# resource "aws_ecs_cluster_capacity_providers" "example" {
-#   cluster_name = aws_ecs_cluster.ecs_cluster.name
-
-#   capacity_providers = [aws_ecs_capacity_provider.ecs_capacity_provider.name]
-
-#   default_capacity_provider_strategy {
-#     base              = 1
-#     weight            = 100
-#     capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
-#   }
-# }
-
 # Define the ECS task definition for the service
 resource "aws_ecs_task_definition" "ecs_task_definition" {
-  family             = "${var.app_name}-ecs-task"
-  execution_role_arn = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
-  cpu                = 256
+  family                   = "${var.app_name}-ecs-task"
+  network_mode             = "awsvpc"
+  execution_role_arn       = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
+  cpu                      = 256
+  requires_compatibilities = ["FARGATE"]
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
   }
+
   container_definitions = jsonencode([
     {
       "name" : "${var.app_name}-api",
@@ -104,29 +80,16 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
 
 # Define the ECS service that will run the task
 resource "aws_ecs_service" "ecs_service" {
-  name            = "${var.app_name}-ecs-service"
+  name            = "${var.app_name}-ecs-fargate"
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.ecs_task_definition.arn
-  desired_count   = 2
+  desired_count   = 1
+  launch_type     = "FARGATE"
 
   network_configuration {
     subnets         = [element(aws_subnet.private_subnet.*.id, 0)]
     security_groups = [aws_security_group.default.id]
   }
-
-  force_new_deployment = true
-  placement_constraints {
-    type = "distinctInstance"
-  }
-
-  triggers = {
-    redeployment = timestamp()
-  }
-
-  # capacity_provider_strategy {
-  #   capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
-  #   weight            = 100
-  # }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_tg.arn
@@ -135,4 +98,9 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   depends_on = [aws_autoscaling_group.ecs_asg, aws_lb.ecs_alb]
+
+  tags = {
+    Environment = "${var.environment}"
+    Application = "${var.app_name}"
+  }
 }
