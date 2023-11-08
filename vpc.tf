@@ -129,19 +129,19 @@ resource "aws_security_group" "default" {
   ]
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    self        = true
-    security_groups = [ aws_security_group.default.id ]
+    from_port       = 0
+    to_port         = 0
+    protocol        = "tcp"
+    cidr_blocks     = ["0.0.0.0/0"]
+    self            = true
+    security_groups = [aws_security_group.default.id]
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
     cidr_blocks = ["0.0.0.0/0"]
   }
 
