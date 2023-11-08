@@ -102,20 +102,20 @@ resource "aws_route" "public_internet_gateway" {
 # Route table associations for both Public & Private Subnets
 resource "aws_route_table_association" "public_1" {
   count          = length(var.public_subnets_cidr)
-  subnet_id      = element(aws_subnet.subnet.id)
+  subnet_id      = [aws_subnet.subnet.id]
   route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "public_2" {
   count          = length(var.public_subnets_cidr)
-  subnet_id      = element(aws_subnet.subnet2.id)
+  subnet_id      = [aws_subnet.subnet2.id]
   route_table_id = aws_route_table.public.id
 }
 
 
 resource "aws_route_table_association" "private" {
   count          = length(var.private_subnets_cidr)
-  subnet_id      = element(aws_subnet.private_subnet.id)
+  subnet_id      = [aws_subnet.private_subnet.id]
   route_table_id = aws_route_table.private.id
 }
 
