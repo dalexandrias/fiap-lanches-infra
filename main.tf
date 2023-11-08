@@ -104,5 +104,5 @@ resource "aws_ecs_service" "ecs_service" {
     container_port   = 8080
   }
 
-  depends_on = [aws_autoscaling_group.ecs_asg]
+  depends_on = [aws_autoscaling_group.ecs_asg, aws_lb.ecs_alb]
 }
