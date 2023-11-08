@@ -50,7 +50,7 @@ resource "aws_lb" "ecs_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.default.id]
-  subnets            = [aws_subnet.subnet[count.index].id, aws_subnet.subnet2[count.index].id]
+  subnets            = [element(aws_subnet.subnet.*.id, 0), element(aws_subnet.subnet.*.id, 1)]
 
   tags = {
     Name = "ecs-alb"
