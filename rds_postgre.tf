@@ -3,7 +3,7 @@ module "db" {
 
   identifier = "${var.app_name}-db"
 
-  engine               = "postgresql"
+  engine               = "postgres"
   engine_version       = "14"
   instance_class       = "db.t3.micro"
   major_engine_version = "14"
