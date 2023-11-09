@@ -27,7 +27,7 @@ resource "aws_launch_template" "ecs_lt" {
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  vpc_zone_identifier = [element(aws_subnet.private_subnet.*.id, 0)]
+  vpc_zone_identifier = [element(aws_subnet.subnet.*.id, 0)]
   desired_capacity    = 2
   max_size            = 3
   min_size            = 1
@@ -59,7 +59,7 @@ resource "aws_lb" "ecs_alb" {
 
 resource "aws_lb_listener" "ecs_alb_listener" {
   load_balancer_arn = aws_lb.ecs_alb.arn
-  port              = 80
+  port              = 3000
   protocol          = "HTTP"
 
   default_action {
