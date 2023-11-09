@@ -27,7 +27,7 @@ resource "aws_launch_template" "ecs_lt" {
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  vpc_zone_identifier = [element(aws_subnet.subnet.*.id, 0)]
+  vpc_zone_identifier = [element(aws_subnet.subnet.*.id, 0), element(aws_subnet.private_subnet.*.id, 0)]
   desired_capacity    = 2
   max_size            = 3
   min_size            = 1
@@ -49,10 +49,8 @@ resource "aws_lb" "ecs_alb" {
   name               = "${var.environment}-ecs-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = module.vpc.private_subnets
-  #security_groups    = [aws_security_group.default.id]
-  #subnets            = [element(aws_subnet.subnet.*.id, 0), element(aws_subnet.subnet2.*.id, 0)]
+  security_groups    = [aws_security_group.default.id]
+  subnets            = [element(aws_subnet.subnet.*.id, 0), element(aws_subnet.subnet2.*.id, 0)]
 
   tags = {
     Name = "${var.app_name}-ecs-alb"
