@@ -12,6 +12,10 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_subnet_ids" "all_subnets" {
+  vpc_id = var.vpc_id
+}
+
 # Create an ECS cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.environment}-ecs-cluster"
@@ -89,7 +93,7 @@ resource "aws_ecs_service" "ecs_service" {
   platform_version = "1.4.0"
 
   network_configuration {
-    subnets         = var.subnet_list
+    subnets         = data.aws_subnet_ids.all_subnets.ids[0]
     security_groups = [aws_security_group.default.id]
   }
 
