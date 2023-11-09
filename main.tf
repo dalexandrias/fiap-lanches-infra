@@ -88,14 +88,6 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type      = "FARGATE"
   platform_version = "1.4.0"
 
-  network_configuration {
-    subnets = concat(
-      aws_subnet.subnet.*.id,
-      aws_subnet.private_subnet.*.id
-    )
-    security_groups = [aws_security_group.default.id]
-  }
-
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_tg.arn
     container_name   = "${var.app_name}-api"
