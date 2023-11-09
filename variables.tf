@@ -34,8 +34,3 @@ variable "private_subnets_cidr" {
   description = "CIDR block for Private Subnet"
   default     = ["10.0.10.0/24"]
 }
-
-variable "subnet_list" {
-  type    = list(string)
-  default = [aws_subnet.subnet.id, aws_subnet.private_subnet.id]
-}
