@@ -93,7 +93,7 @@ resource "aws_ecs_service" "ecs_service" {
   platform_version = "1.4.0"
 
   network_configuration {
-    subnets         = data.aws_subnet.all_subnets.ids[0]
+    subnets         = data.aws_subnet.all_subnets.id[0]
     security_groups = [aws_security_group.default.id]
   }
 
