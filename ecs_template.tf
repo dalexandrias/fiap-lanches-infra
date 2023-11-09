@@ -70,7 +70,7 @@ resource "aws_lb_listener" "ecs_alb_listener" {
 
 resource "aws_lb_target_group" "ecs_tg" {
   name        = "${var.environment}-ecs-target-group"
-  port        = 8080
+  port        = 3000
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.vpc.id
