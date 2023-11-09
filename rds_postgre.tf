@@ -39,15 +39,4 @@ module "db" {
 
   # Database Deletion Protection
   deletion_protection = false
-
-  parameters = [
-    {
-      name  = "character_set_client"
-      value = "utf8mb4"
-    },
-    {
-      name  = "character_set_server"
-      value = "utf8mb4"
-    }
-  ]
 }
