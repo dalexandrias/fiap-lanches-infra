@@ -27,7 +27,7 @@ resource "aws_launch_template" "ecs_lt" {
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  vpc_zone_identifier = [concat(aws_subnet.subnet.*.id, aws_subnet.private_subnet.*.id)]
+  vpc_zone_identifier = [element(aws_subnet.private_subnet.*.id, 0), element(aws_subnet.subnet.*.id, 0)]
   desired_capacity    = 2
   max_size            = 3
   min_size            = 1
