@@ -28,7 +28,7 @@ resource "aws_security_group" "database_security_group" {
 
 resource "aws_db_subnet_group" "database_subnet_group" {
   name        = "${var.app_name}-rds-postgres-subnets"
-  subnet_ids  = [element(aws_subnet.private_subnet.*.id, 0), element(aws_subnet.subnet2.*.id, 0)]
+  subnet_ids  = [element(aws_subnet.private_subnet.*.id, 0), element(aws_subnet.subnet.*.id, 0)]
   description = "Subnets para o rds postgres"
 
   tags = {
@@ -51,47 +51,3 @@ resource "aws_db_instance" "db_instance" {
   db_name                = "fiaplanches"
   skip_final_snapshot    = true
 }
-
-
-# module "db" {
-#   source = "terraform-aws-modules/rds/aws"
-
-#   identifier = "${var.app_name}-db"
-
-#   engine               = "postgres"
-#   engine_version       = "14"
-#   instance_class       = "db.t3.micro"
-#   major_engine_version = "14"
-#   allocated_storage    = 5
-
-#   db_name  = "fiaplanches"
-#   username = "fiap_lanches"
-#   port     = "5432"
-
-#   iam_database_authentication_enabled = false
-
-#   vpc_security_group_ids = [aws_security_group.default.id]
-
-#   maintenance_window = "Mon:00:00-Mon:03:00"
-#   backup_window      = "03:00-06:00"
-
-#   # Enhanced Monitoring - see example for details on how to create the role
-#   # by yourself, in case you don't want to create it automatically
-#   monitoring_interval    = "30"
-#   monitoring_role_name   = "${var.app_name}-Role"
-#   create_monitoring_role = true
-
-#   tags = {
-#     Owner       = "${var.app_name}"
-#     Environment = "${var.environment}"
-#   }
-
-#   # DB subnet group
-#   subnet_ids = [element(aws_subnet.private_subnet.*.id, 0)]
-
-#   # DB parameter group
-#   family = "postgres14"
-
-#   # Database Deletion Protection
-#   deletion_protection = false
-# }
