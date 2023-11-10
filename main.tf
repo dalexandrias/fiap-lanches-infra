@@ -89,8 +89,9 @@ resource "aws_ecs_service" "ecs_service" {
   platform_version = "1.4.0"
 
   network_configuration {
-    subnets         = [element(aws_subnet.subnet2.*.id, 0)]
-    security_groups = [aws_security_group.default.id]
+    subnets          = [element(aws_subnet.subnet2.*.id, 0)]
+    security_groups  = [aws_security_group.default.id]
+    assign_public_ip = false
   }
 
   load_balancer {
