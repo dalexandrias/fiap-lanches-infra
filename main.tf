@@ -22,8 +22,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   family                   = "${var.app_name}-ecs-task"
   network_mode             = "awsvpc"
   execution_role_arn       = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = 512
+  memory                   = 1024
   requires_compatibilities = ["FARGATE"]
   runtime_platform {
     operating_system_family = "LINUX"
@@ -34,8 +34,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     {
       "name" : "${var.app_name}-api",
       "image" : var.ecr_regitry_url,
-      "cpu" : 256,
-      "memory" : 497,
+      "cpu" : 512,
+      "memory" : 1024,
       "portMappings" : [
         {
           "containerPort" : 8080,

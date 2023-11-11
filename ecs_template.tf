@@ -79,7 +79,7 @@ resource "aws_lb_target_group" "ecs_tg" {
     healthy_threshold   = "3"
     interval            = "90"
     protocol            = "HTTP"
-    matcher             = "200-299"
+    matcher             = "200-499"
     timeout             = "20"
     path                = "/"
     unhealthy_threshold = "2"
