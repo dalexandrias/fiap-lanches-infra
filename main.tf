@@ -14,7 +14,7 @@ provider "aws" {
 
 # Create an ECS cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.environment}-ecs-cluster"
+  name = "${var.app_name}-ecs-cluster"
 }
 
 # Define the ECS task definition for the service
@@ -22,8 +22,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   family                   = "${var.app_name}-ecs-task"
   network_mode             = "awsvpc"
   execution_role_arn       = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = 512
+  memory                   = 1024
   requires_compatibilities = ["FARGATE"]
   runtime_platform {
     operating_system_family = "LINUX"
@@ -34,8 +34,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     {
       "name" : "${var.app_name}-api",
       "image" : var.ecr_regitry_url,
-      "cpu" : 256,
-      "memory" : 497,
+      "cpu" : 512,
+      "memory" : 1024,
       "portMappings" : [
         {
           "containerPort" : 8080,
@@ -55,11 +55,11 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
         },
         {
           "name" : "SPRING_DATASOURCE_PASSWORD",
-          "value" : "w44JZd3d4BYQiNDhNLg4"
+          "value" : "fiaplanches123"
         },
         {
           "name" : "SPRING_DATASOURCE_URL",
-          "value" : "jdbc:postgresql://fiaplanches.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
+          "value" : "jdbc:postgresql://develop-rds-postgres.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
         },
         {
           "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
@@ -89,21 +89,64 @@ resource "aws_ecs_service" "ecs_service" {
   platform_version = "1.4.0"
 
   network_configuration {
-    subnets          = [element(aws_subnet.subnet2.*.id, 0)]
-    security_groups  = [aws_security_group.default.id]
-    assign_public_ip = false
+    subnets          = [element(aws_subnet.private_subnet_1.*.id, 0), element(aws_subnet.public_subnet_1.*.id, 0)]
+    security_groups  = [aws_security_group.ecs_segurity_group.id]
+    assign_public_ip = true
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.ecs_tg.arn
+    target_group_arn = aws_lb_target_group.fiap_lanches_tg.arn
     container_name   = "${var.app_name}-api"
     container_port   = 8080
   }
 
-  depends_on = [aws_autoscaling_group.ecs_asg, aws_lb.ecs_alb]
+  depends_on = [aws_autoscaling_group.ecs_asg, aws_lb.fiap_lanches_alb]
 
   tags = {
     Environment = "${var.environment}"
     Application = "${var.app_name}"
+  }
+}
+
+resource "aws_autoscaling_group" "ecs_asg" {
+  vpc_zone_identifier = [element(aws_subnet.public_subnet_2.*.id, 0), element(aws_subnet.public_subnet_1.*.id, 0)]
+  desired_capacity    = 2
+  max_size            = 3
+  min_size            = 1
+
+  launch_template {
+    id      = aws_launch_template.ecs_lt.id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "AmazonECSManaged"
+    value               = true
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_security_group" "ecs_segurity_group" {
+  name        = "${var.app_name}-ecs-default-sg"
+  description = "Libera o trafego para o ECS"
+  vpc_id      = aws_vpc.fiap_lanches_vpc.id
+
+  ingress {
+    from_port       = 0
+    to_port         = 65535
+    protocol        = "tcp"
+    cidr_blocks     = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.alb_segurity_group.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Environment = "${var.environment}"
   }
 }
