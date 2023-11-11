@@ -89,7 +89,7 @@ resource "aws_ecs_service" "ecs_service" {
   platform_version = "1.4.0"
 
   network_configuration {
-    subnets          = [element(aws_subnet.private_subnet_1.*.id, 0), element(aws_subnet.public_subnet_1.*.id, 0)]
+    subnets          = [element(aws_subnet.public_subnet_2.*.id, 0), element(aws_subnet.public_subnet_1.*.id, 0)]
     security_groups  = [aws_security_group.ecs_segurity_group.id]
     assign_public_ip = true
   }
