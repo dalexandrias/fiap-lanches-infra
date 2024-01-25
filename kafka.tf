@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_group" "kafka_log_group" {
 }
 
 resource "aws_msk_configuration" "kafka_config" {
-  kafka_versions    = ["3.4.0"] 
+  kafka_versions    = ["3.4.0"]
   name              = "${var.global_prefix}-config"
   server_properties = <<EOF
 auto.create.topics.enable = true
@@ -26,7 +26,7 @@ resource "aws_msk_cluster" "kafka" {
         volume_size = 1000
       }
     }
-    client_subnets = [element(aws_subnet.private_subnet_1.*.id, 0), element(aws_subnet.private_subnet_2.*.id, 0)]
+    client_subnets  = [element(aws_subnet.private_subnet_1.*.id, 0), element(aws_subnet.private_subnet_2.*.id, 0)]
     security_groups = [aws_security_group.kafka.id]
   }
   encryption_info {
