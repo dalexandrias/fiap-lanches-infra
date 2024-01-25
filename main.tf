@@ -19,7 +19,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 
 # Define the ECS task definition for the service
 resource "aws_ecs_task_definition" "ecs_task_definition_fiap_lanches_conta" {
-  family                   = "${var.app_name}-ecs-task"
+  family                   = "${var.app_name}-ecs-task-conta"
   network_mode             = "awsvpc"
   execution_role_arn       = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
   cpu                      = 512
