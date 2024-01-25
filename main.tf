@@ -18,7 +18,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 }
 
 # Define the ECS task definition for the service
-resource "aws_ecs_task_definition" "ecs_task_definition" {
+resource "aws_ecs_task_definition" "ecs_task_definition_fiap_lanches_conta" {
   family                   = "${var.app_name}-ecs-task"
   network_mode             = "awsvpc"
   execution_role_arn       = "arn:aws:iam::516194196157:role/ecsTaskExecutionRole"
@@ -32,14 +32,14 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
 
   container_definitions = jsonencode([
     {
-      "name" : "${var.app_name}-api",
-      "image" : var.ecr_regitry_url,
+      "name" : "${var.app_name}-conta-api",
+      "image" : var.ecr_regitry_fiap_lanches_conta,
       "cpu" : 512,
       "memory" : 1024,
       "portMappings" : [
         {
-          "containerPort" : 8080,
-          "hostPort" : 8080,
+          "containerPort" : 8085,
+          "hostPort" : 8085,
           "protocol" : "tcp"
         }
       ],
@@ -48,10 +48,6 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
         {
           "name" : "SPRING_DATASOURCE_USERNAME",
           "value" : "fiap_lanches"
-        },
-        {
-          "name" : "WEBHOOK_URL",
-          "value" : "http://172.31.20.230:8081"
         },
         {
           "name" : "SPRING_DATASOURCE_PASSWORD",
@@ -69,7 +65,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       "logConfiguration" : {
         "logDriver" : "awslogs",
         "options" : {
-          "awslogs-group" : "/ecs/task-fiap-lanches",
+          "awslogs-group" : "/ecs/task-fiap-lanches-conta-api",
           "awslogs-region" : "us-east-1",
           "awslogs-stream-prefix" : "ecs"
         },
@@ -97,7 +93,7 @@ resource "aws_ecs_service" "ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.fiap_lanches_tg.arn
     container_name   = "${var.app_name}-api"
-    container_port   = 8080
+    container_port   = 8085
   }
 
   depends_on = [aws_autoscaling_group.ecs_asg, aws_lb.fiap_lanches_alb]

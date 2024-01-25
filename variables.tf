@@ -3,8 +3,8 @@ variable "app_name" {
   type    = string
 }
 
-variable "ecr_regitry_url" {
-  default = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches:latest"
+variable "ecr_regitry_fiap_lanches_conta" {
+  default = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest"
   type    = string
 }
 
