@@ -15,7 +15,7 @@ delete.topic.enable = true
 EOF
 }
 
-resource "aws_msk_cluster" "kafka" {
+resource "aws_msk_cluster" "fiap-lanches-kafka" {
   cluster_name           = var.global_prefix
   kafka_version          = "3.4.0"
   number_of_broker_nodes = length(data.aws_availability_zones.available.names)

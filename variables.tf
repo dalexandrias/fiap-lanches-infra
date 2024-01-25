@@ -37,5 +37,5 @@ variable "private_subnets_cidr" {
 
 variable "global_prefix" {
   type    = string
-  default = "fiap-lanches-kafka-msk"
+  default = "fiap-lanches-msk"
 }
