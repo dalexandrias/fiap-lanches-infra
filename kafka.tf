@@ -62,7 +62,7 @@ resource "aws_msk_cluster" "kafka" {
 
 resource "aws_security_group" "kafka" {
   name   = "${var.global_prefix}-kafka"
-  vpc_id = aws_vpc.default.id
+  vpc_id = aws_vpc.fiap_lanches_vpc.id
   ingress {
     from_port   = 0
     to_port     = 9092
