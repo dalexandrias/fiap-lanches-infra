@@ -42,3 +42,28 @@ resource "aws_security_group" "ecs_tasks" {
   }
 }
 
+resource "aws_security_group" "database_security_group" {
+  name        = "${var.app_name}-rds-postgres-sg"
+  description = "Liberacao da porta 5432 para acesso ao rds postgres"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_tasks.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Environment = "${var.app_name}-rds-postgres"
+  }
+
+  depends_on = [aws_security_group.ecs_tasks]
+}
