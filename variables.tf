@@ -10,6 +10,16 @@ variable "app_name" {
   type    = string
 }
 
+variable "container_conta_name" {
+  default = "fiap-lanches-conta-app"
+  type    = string
+}
+
+variable "container_product_name" {
+  default = "fiap-lanches-product-app"
+  type    = string
+}
+
 variable "ecs_task_execution_role_name" {
   description = "ECS task execution role name"
   default     = "myEcsTaskExecutionRole"
@@ -30,6 +40,15 @@ variable "app_port" {
   description = "Port exposed by the docker image to redirect traffic to"
   default     = 8085
   type        = number
+}
+
+variable "dict_port_app" {
+  description = "Port exposed by the docker image to redirect traffic to"
+  default = {
+    conta_app   = 8085,
+    product_app = 8082
+  }
+  type = map(number)
 }
 
 variable "app_count" {
