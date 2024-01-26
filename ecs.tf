@@ -16,8 +16,8 @@ resource "aws_ecs_cluster" "main" {
 #   }
 # }
 
-resource "aws_ecs_task_definition" "app" {
-  family                   = "fiap-lanches-app-task"
+resource "aws_ecs_task_definition" "conta-task-app" {
+  family                   = "${var.app_name}-app-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -68,10 +68,10 @@ resource "aws_ecs_task_definition" "app" {
   ])
 }
 
-resource "aws_ecs_service" "main" {
-  name            = "fiap-lanches-service"
+resource "aws_ecs_service" "conta-service-main" {
+  name            = "${var.app_name}-service"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.app.arn
+  task_definition = aws_ecs_task_definition.conta-task-app.arn
   desired_count   = var.app_count
   launch_type     = "FARGATE"
 

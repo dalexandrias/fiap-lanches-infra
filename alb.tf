@@ -7,7 +7,7 @@ resource "aws_alb" "main" {
 }
 
 resource "aws_alb_target_group" "app" {
-  name        = "fiap-lanches-target-group"
+  name        = "${var.app_name}-target-group"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id

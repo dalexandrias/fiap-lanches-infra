@@ -38,7 +38,7 @@ variable "app_count" {
 }
 
 variable "health_check_path" {
-  default = "/health"
+  default = "/actuator/health"
 }
 
 variable "fargate_cpu" {
