@@ -43,7 +43,7 @@ variable "health_check_path" {
 
 variable "fargate_cpu" {
   description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
-  default     = "1024"
+  default     = "512"
   type        = number
 }
 
