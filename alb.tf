@@ -27,7 +27,18 @@ resource "aws_alb_target_group" "app" {
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "conta_app" {
   load_balancer_arn = aws_alb.main.id
-  port              = var.dict_port_app["conta_app"]
+  port              = var.dict_port_app["conta"]
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = aws_alb_target_group.app.id
+    type             = "forward"
+  }
+}
+
+resource "aws_alb_listener" "product_app" {
+  load_balancer_arn = aws_alb.main.id
+  port              = var.dict_port_app["product"]
   protocol          = "HTTP"
 
   default_action {

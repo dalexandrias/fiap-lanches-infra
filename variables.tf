@@ -30,23 +30,20 @@ variable "az_count" {
   default     = "2"
 }
 
-variable "app_image" {
+variable "dict_app_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest"
-  type        = string
-}
-
-variable "app_port" {
-  description = "Port exposed by the docker image to redirect traffic to"
-  default     = 8085
-  type        = number
+  default = {
+    conta   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest",
+    product = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-product:latest"
+  }
+  type = map(string)
 }
 
 variable "dict_port_app" {
   description = "Port exposed by the docker image to redirect traffic to"
   default = {
-    conta_app   = 8085,
-    product_app = 8082
+    conta   = 8085,
+    product = 8082
   }
   type = map(number)
 }

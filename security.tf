@@ -8,8 +8,15 @@ resource "aws_security_group" "lb" {
 
   ingress {
     protocol    = "tcp"
-    from_port   = var.app_port
-    to_port     = var.app_port
+    from_port   = var.dict_port_app["conta"]
+    to_port     = var.dict_port_app["conta"]
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = var.dict_port_app["product"]
+    to_port     = var.dict_port_app["product"]
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -29,8 +36,15 @@ resource "aws_security_group" "ecs_tasks" {
 
   ingress {
     protocol        = "tcp"
-    from_port       = var.app_port
-    to_port         = var.app_port
+    from_port       = var.dict_port_app["conta"]
+    to_port         = var.dict_port_app["conta"]
+    security_groups = [aws_security_group.lb.id]
+  }
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.dict_port_app["product"]
+    to_port         = var.dict_port_app["product"]
     security_groups = [aws_security_group.lb.id]
   }
 
