@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "app" {
       "image" : var.app_image,
       "cpu" : var.fargate_cpu,
       "memory" : var.fargate_memory,
-      "networkMode": "awsvpc",
+      "networkMode" : "awsvpc",
       "portMappings" : [
         {
           "containerPort" : var.app_port,
