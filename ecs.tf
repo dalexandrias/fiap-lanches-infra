@@ -49,7 +49,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           "name" : "SPRING_DATASOURCE_URL",
-          "value" : "jdbc:postgresql://develop-rds-postgres.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
+          "value" : "jdbc:postgresql://fiap-lanches-rds-postgres.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
         },
         {
           "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
@@ -59,7 +59,7 @@ resource "aws_ecs_task_definition" "app" {
       "logConfiguration" : {
         "logDriver" : "awslogs",
         "options" : {
-          "awslogs-group" : "/ecs/fiap-lanches-conta-app",
+          "awslogs-group" : "/ecs/${var.app_name}-conta-app",
           "awslogs-region" : "${var.aws_region}",
           "awslogs-stream-prefix" : "ecs"
         }
