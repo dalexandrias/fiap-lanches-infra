@@ -77,7 +77,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition_fiap_lanches_conta" {
 
 # Define the ECS service that will run the task
 resource "aws_ecs_service" "ecs_service" {
-  name             = "${var.app_name}-ecs-fargate"
+  name             = "${var.app_name}-ecs-fargate-conta"
   cluster          = aws_ecs_cluster.ecs_cluster.id
   task_definition  = aws_ecs_task_definition.ecs_task_definition_fiap_lanches_conta.arn
   desired_count    = 2
@@ -92,11 +92,11 @@ resource "aws_ecs_service" "ecs_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.fiap_lanches_tg.arn
-    container_name   = "${var.app_name}-api"
+    container_name   = "${var.app_name}-conta-api"
     container_port   = 8085
   }
 
-  depends_on = [aws_autoscaling_group.ecs_asg, aws_lb.fiap_lanches_alb]
+  depends_on = [aws_lb.fiap_lanches_alb]
 
   tags = {
     Environment = "${var.environment}"
@@ -104,23 +104,23 @@ resource "aws_ecs_service" "ecs_service" {
   }
 }
 
-resource "aws_autoscaling_group" "ecs_asg" {
-  vpc_zone_identifier = [element(aws_subnet.public_subnet_2.*.id, 0), element(aws_subnet.public_subnet_1.*.id, 0)]
-  desired_capacity    = 2
-  max_size            = 3
-  min_size            = 1
+# resource "aws_autoscaling_group" "ecs_asg" {
+#   vpc_zone_identifier = [element(aws_subnet.public_subnet_2.*.id, 0), element(aws_subnet.public_subnet_1.*.id, 0)]
+#   desired_capacity    = 2
+#   max_size            = 3
+#   min_size            = 1
 
-  launch_template {
-    id      = aws_launch_template.ecs_lt.id
-    version = "$Latest"
-  }
+#   launch_template {
+#     id      = aws_launch_template.ecs_lt.id
+#     version = "$Latest"
+#   }
 
-  tag {
-    key                 = "AmazonECSManaged"
-    value               = true
-    propagate_at_launch = true
-  }
-}
+#   tag {
+#     key                 = "AmazonECSManaged"
+#     value               = true
+#     propagate_at_launch = true
+#   }
+# }
 
 resource "aws_security_group" "ecs_segurity_group" {
   name        = "${var.app_name}-ecs-default-sg"
