@@ -23,11 +23,13 @@ variable "az_count" {
 variable "app_image" {
   description = "Docker image to run in the ECS cluster"
   default     = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest"
+  type        = string
 }
 
 variable "app_port" {
   description = "Port exposed by the docker image to redirect traffic to"
   default     = 8085
+  type        = number
 }
 
 variable "app_count" {
@@ -42,10 +44,12 @@ variable "health_check_path" {
 variable "fargate_cpu" {
   description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
   default     = "1024"
+  type        = number
 }
 
 variable "fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
   default     = "1024"
+  type        = number
 }
 
