@@ -25,7 +25,7 @@ resource "aws_db_instance" "db_instance" {
   availability_zone      = data.aws_availability_zones.available.names[count.index]
   db_name                = "fiaplanches"
   skip_final_snapshot    = true
-  publicly_accessible    = true
+  # publicly_accessible    = true
 
   depends_on = [aws_db_subnet_group.database_subnet_group]
 }
