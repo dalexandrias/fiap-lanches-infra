@@ -1,41 +1,46 @@
-variable "app_name" {
-  default = "fiap-lanches"
-  type    = string
+# variables.tf
+
+variable "aws_region" {
+  description = "The AWS region things are created in"
+  default     = "us-east-1"
 }
 
-variable "ecr_regitry_fiap_lanches_conta" {
-  default = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest"
-  type    = string
+variable "ecs_task_execution_role_name" {
+  description = "ECS task execution role name"
+  default     = "myEcsTaskExecutionRole"
 }
 
-variable "region" {
-  default = "us-east-1"
+variable "az_count" {
+  description = "Number of AZs to cover in a given region"
+  default     = "2"
 }
 
-variable "environment" {
-  description = "Deployment Environment"
-  default     = "develop"
-  type        = string
+variable "app_image" {
+  description = "Docker image to run in the ECS cluster"
+  default     = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest"
 }
 
-variable "vpc_cidr" {
-  description = "CIDR block of the vpc"
-  default     = "10.0.0.0/16"
+variable "app_port" {
+  description = "Port exposed by the docker image to redirect traffic to"
+  default     = 8085
 }
 
-variable "public_subnets_cidr" {
-  type        = list(any)
-  description = "CIDR block for Public Subnet"
-  default     = ["10.0.1.0/24"]
+variable "app_count" {
+  description = "Number of docker containers to run"
+  default     = 1
 }
 
-variable "private_subnets_cidr" {
-  type        = list(any)
-  description = "CIDR block for Private Subnet"
-  default     = ["10.0.10.0/24"]
+variable "health_check_path" {
+  default = "/health"
 }
 
-variable "global_prefix" {
-  type    = string
-  default = "fiap-lanches-msk"
+variable "fargate_cpu" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  default     = "1024"
 }
+
+variable "fargate_memory" {
+  description = "Fargate instance memory to provision (in MiB)"
+  default     = "1024"
+}
+
