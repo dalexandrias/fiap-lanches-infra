@@ -5,6 +5,11 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "app_name" {
+  default = "fiap-lanches"
+  type    = string
+}
+
 variable "ecs_task_execution_role_name" {
   description = "ECS task execution role name"
   default     = "myEcsTaskExecutionRole"

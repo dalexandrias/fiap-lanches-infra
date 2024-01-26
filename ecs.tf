@@ -4,17 +4,17 @@ resource "aws_ecs_cluster" "main" {
   name = "fiap-lanches-cluster"
 }
 
-data "template_file" "fiap-lanches_app" {
-  template = file("./templates/ecs/fiap_lanches_app.json.tpl")
+# data "template_file" "fiap_lanches_app" {
+#   template = file("./templates/ecs/fiap_lanches_app.json.tpl")
 
-  vars = {
-    app_image      = var.app_image
-    app_port       = var.app_port
-    fargate_cpu    = var.fargate_cpu
-    fargate_memory = var.fargate_memory
-    aws_region     = var.aws_region
-  }
-}
+#   vars = {
+#     app_image      = var.app_image
+#     app_port       = var.app_port
+#     fargate_cpu    = var.fargate_cpu
+#     fargate_memory = var.fargate_memory
+#     aws_region     = var.aws_region
+#   }
+# }
 
 resource "aws_ecs_task_definition" "app" {
   family                   = "fiap-lanches-app-task"
@@ -23,7 +23,49 @@ resource "aws_ecs_task_definition" "app" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
-  container_definitions    = data.template_file.fiap-lanches_app.rendered
+  container_definitions = jsonencode([
+    {
+      "name" : "${var.app_name}-conta-api",
+      "image" : var.app_image,
+      "cpu" : var.fargate_cpu,
+      "memory" : var.fargate_memory,
+      "networkMode": "awsvpc",
+      "portMappings" : [
+        {
+          "containerPort" : var.app_port,
+          "hostPort" : var.app_port,
+          "protocol" : "tcp"
+        }
+      ],
+      "essential" : true,
+      "environment" : [
+        {
+          "name" : "SPRING_DATASOURCE_USERNAME",
+          "value" : "fiap_lanches"
+        },
+        {
+          "name" : "SPRING_DATASOURCE_PASSWORD",
+          "value" : "fiaplanches123"
+        },
+        {
+          "name" : "SPRING_DATASOURCE_URL",
+          "value" : "jdbc:postgresql://develop-rds-postgres.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
+        },
+        {
+          "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
+          "value" : "create"
+        }
+      ],
+      "logConfiguration" : {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-group" : "/ecs/fiap-lanches-conta-app",
+          "awslogs-region" : "${var.aws_region}",
+          "awslogs-stream-prefix" : "ecs"
+        }
+      }
+    }
+  ])
 }
 
 resource "aws_ecs_service" "main" {
