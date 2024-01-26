@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
       "logConfiguration" : {
         "logDriver" : "awslogs",
         "options" : {
-          "awslogs-group" : "/ecs/${var.app_name}-conta-app",
+          "awslogs-group" : "/ecs/${var.container_conta_name}",
           "awslogs-region" : "${var.aws_region}",
           "awslogs-stream-prefix" : "ecs"
         }
@@ -129,7 +129,7 @@ resource "aws_ecs_task_definition" "product-task-app" {
       "logConfiguration" : {
         "logDriver" : "awslogs",
         "options" : {
-          "awslogs-group" : "/ecs/${var.app_name}-conta-app",
+          "awslogs-group" : "/ecs/${var.container_product_name}",
           "awslogs-region" : "${var.aws_region}",
           "awslogs-stream-prefix" : "ecs"
         }
