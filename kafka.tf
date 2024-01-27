@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_group" "kafka_log_group" {
 }
 
 resource "aws_msk_configuration" "kafka_config" {
-  kafka_versions    = ["3.4.0"]
+  kafka_versions    = ["3.5.1"]
   name              = "${var.app_name}-config"
   server_properties = <<EOF
 auto.create.topics.enable = true
@@ -18,7 +18,7 @@ EOF
 resource "aws_msk_cluster" "kafka" {
   cluster_name           = "${var.app_name}-kafka"
   kafka_version          = "3.5.1"
-  number_of_broker_nodes = length(data.aws_availability_zones.available.names)
+  number_of_broker_nodes = 1
   broker_node_group_info {
     instance_type = "kafka.t3.small" # default value
     storage_info {
