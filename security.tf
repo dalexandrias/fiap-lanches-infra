@@ -81,3 +81,29 @@ resource "aws_security_group" "database_security_group" {
 
   depends_on = [aws_security_group.ecs_tasks]
 }
+
+resource "aws_security_group" "kafka_security_group" {
+  name        = "${var.app_name}-kafka-sg"
+  description = "Liberacao da porta 9092 para acesso ao kafka"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port       = 9092
+    to_port         = 9092
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_tasks.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Environment = "${var.app_name}-rds-postgres"
+  }
+
+  depends_on = [aws_security_group.ecs_tasks]
+}
