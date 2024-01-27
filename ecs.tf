@@ -74,7 +74,7 @@ resource "aws_ecs_service" "conta-service-main" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.app.id
+    target_group_arn = aws_alb_target_group.conta_app.id
     container_name   = var.container_conta_name
     container_port   = var.dict_port_app["conta"]
   }
@@ -152,7 +152,7 @@ resource "aws_ecs_service" "product-service-main" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.app.id
+    target_group_arn = aws_alb_target_group.product_app.id
     container_name   = var.container_product_name
     container_port   = var.dict_port_app["product"]
   }

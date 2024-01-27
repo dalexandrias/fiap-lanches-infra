@@ -11,12 +11,12 @@ variable "app_name" {
 }
 
 variable "container_conta_name" {
-  default = "fiap-lanches-conta-app"
+  default = "conta-app"
   type    = string
 }
 
 variable "container_product_name" {
-  default = "fiap-lanches-product-app"
+  default = "product-app"
   type    = string
 }
 
