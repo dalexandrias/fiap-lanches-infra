@@ -211,11 +211,11 @@ resource "aws_ecs_task_definition" "order-task-app" {
         },
         {
           "name" : "REST_CLIENTS_ENDPOINT",
-          "value" : "http://${aws_alb.main.dns_name}:8085/v1/clients"
+          "value" : "http://${aws_alb.main.dns_name}:8085/v1/client"
         },
         {
           "name" : "REST_PRODUCTS_ENDPOINT",
-          "value" : "http://${aws_alb.main.dns_name}:8082/v1/products"
+          "value" : "http://${aws_alb.main.dns_name}:8082/v1/product"
         }
       ],
       "logConfiguration" : {
