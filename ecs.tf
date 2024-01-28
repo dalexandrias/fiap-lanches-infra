@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
         },
         {
           "name" : "SPRING_DATASOURCE_URL",
-          "value" : "jdbc:postgresql://fiap-lanches-rds-postgres.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
+          "value" : "jdbc:postgresql://${aws_db_instance.db_instance.endpoint}:5432/fiaplanches"
         },
         {
           "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
@@ -58,6 +58,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
       }
     }
   ])
+  depends_on = [aws_alb.main]
 }
 
 resource "aws_ecs_service" "conta-service-main" {
@@ -79,7 +80,7 @@ resource "aws_ecs_service" "conta-service-main" {
     container_port   = var.dict_port_app["conta"]
   }
 
-  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.main]
 }
 
 
@@ -119,7 +120,7 @@ resource "aws_ecs_task_definition" "product-task-app" {
         },
         {
           "name" : "SPRING_DATASOURCE_URL",
-          "value" : "jdbc:postgresql://fiap-lanches-rds-postgres.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
+          "value" : "jdbc:postgresql://${aws_db_instance.db_instance.endpoint}:5432/fiaplanches"
         },
         {
           "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
@@ -136,6 +137,7 @@ resource "aws_ecs_task_definition" "product-task-app" {
       }
     }
   ])
+  depends_on = [aws_alb.main]
 }
 
 resource "aws_ecs_service" "product-service-main" {
@@ -157,7 +159,7 @@ resource "aws_ecs_service" "product-service-main" {
     container_port   = var.dict_port_app["product"]
   }
 
-  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.main]
 }
 
 
@@ -197,7 +199,7 @@ resource "aws_ecs_task_definition" "order-task-app" {
         },
         {
           "name" : "SPRING_DATASOURCE_URL",
-          "value" : "jdbc:postgresql://fiap-lanches-rds-postgres.cf5bq2g9b2j1.us-east-1.rds.amazonaws.com:5432/fiaplanches"
+          "value" : "jdbc:postgresql://${aws_db_instance.db_instance.endpoint}:5432/fiaplanches"
         },
         {
           "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
@@ -209,11 +211,11 @@ resource "aws_ecs_task_definition" "order-task-app" {
         },
         {
           "name" : "REST_CLIENTS_ENDPOINT",
-          "value" : "b-1.fiaplancheskafka.2alw2k.c20.kafka.us-east-1.amazonaws.com:9092"
+          "value" : "http://${aws_alb.main.dns_name}:8085/v1/clients"
         },
         {
           "name" : "REST_PRODUCTS_ENDPOINT",
-          "value" : "b-1.fiaplancheskafka.2alw2k.c20.kafka.us-east-1.amazonaws.com:9092"
+          "value" : "http://${aws_alb.main.dns_name}:8082/v1/products"
         }
       ],
       "logConfiguration" : {
@@ -226,6 +228,7 @@ resource "aws_ecs_task_definition" "order-task-app" {
       }
     }
   ])
+  depends_on = [aws_alb.main]
 }
 
 resource "aws_ecs_service" "order-service-main" {
@@ -247,5 +250,5 @@ resource "aws_ecs_service" "order-service-main" {
     container_port   = var.dict_port_app["order"]
   }
 
-  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.main]
 }
