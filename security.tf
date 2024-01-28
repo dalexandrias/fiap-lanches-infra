@@ -116,7 +116,7 @@ resource "aws_security_group" "kafka_security_group" {
   }
 
   tags = {
-    Environment = "${var.app_name}-rds-postgres"
+    Environment = "${var.app_name}-kafka"
   }
 
   depends_on = [aws_security_group.ecs_tasks]
