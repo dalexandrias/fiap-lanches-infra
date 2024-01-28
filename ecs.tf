@@ -206,6 +206,14 @@ resource "aws_ecs_task_definition" "order-task-app" {
         {
           "name" : "SPRING_KAFKA_BOOTSTRAP_SERVERS",
           "value" : "b-1.fiaplancheskafka.2alw2k.c20.kafka.us-east-1.amazonaws.com:9092"
+        },
+        {
+          "name" : "REST_CLIENTS_ENDPOINT",
+          "value" : "b-1.fiaplancheskafka.2alw2k.c20.kafka.us-east-1.amazonaws.com:9092"
+        },
+        {
+          "name" : "REST_PRODUCTS_ENDPOINT",
+          "value" : "b-1.fiaplancheskafka.2alw2k.c20.kafka.us-east-1.amazonaws.com:9092"
         }
       ],
       "logConfiguration" : {
