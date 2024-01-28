@@ -171,7 +171,7 @@ resource "aws_ecs_task_definition" "order-task-app" {
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = var.fargate_cpu
+  cpu                      = 1024
   memory                   = var.fargate_memory
   container_definitions = jsonencode([
     {
