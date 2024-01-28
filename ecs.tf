@@ -177,8 +177,8 @@ resource "aws_ecs_task_definition" "order-task-app" {
     {
       "name" : "${var.container_order_name}",
       "image" : var.dict_app_image["order"],
-      "cpu" : var.fargate_cpu,
-      "memory" : var.fargate_memory,
+      "cpu" : 1024,
+      "memory" : 2048,
       "networkMode" : "awsvpc",
       "portMappings" : [
         {
