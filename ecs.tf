@@ -173,7 +173,7 @@ resource "aws_ecs_task_definition" "order-task-app" {
   memory                   = var.fargate_memory
   container_definitions = jsonencode([
     {
-      "name" : "${var.container_product_name}",
+      "name" : "${var.container_order_name}",
       "image" : var.dict_app_image["order"],
       "cpu" : var.fargate_cpu,
       "memory" : var.fargate_memory,
