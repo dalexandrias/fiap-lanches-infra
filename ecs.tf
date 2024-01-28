@@ -172,7 +172,7 @@ resource "aws_ecs_task_definition" "order-task-app" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 1024
-  memory                   = var.fargate_memory
+  memory                   = 2048
   container_definitions = jsonencode([
     {
       "name" : "${var.container_order_name}",
