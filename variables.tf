@@ -20,6 +20,11 @@ variable "container_product_name" {
   type    = string
 }
 
+variable "container_order_name" {
+  default = "order-app"
+  type    = string
+}
+
 variable "ecs_task_execution_role_name" {
   description = "ECS task execution role name"
   default     = "myEcsTaskExecutionRole"
@@ -34,7 +39,8 @@ variable "dict_app_image" {
   description = "Docker image to run in the ECS cluster"
   default = {
     conta   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest",
-    product = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-product:latest"
+    product = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-product:latest",
+    order   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-order:latest"
   }
   type = map(string)
 }
@@ -43,7 +49,8 @@ variable "dict_port_app" {
   description = "Port exposed by the docker image to redirect traffic to"
   default = {
     conta   = 8085,
-    product = 8082
+    product = 8082,
+    order   = 8081
   }
   type = map(number)
 }
