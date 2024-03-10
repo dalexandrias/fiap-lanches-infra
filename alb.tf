@@ -6,23 +6,23 @@ resource "aws_alb" "main" {
   security_groups = [aws_security_group.lb.id]
 }
 
-resource "aws_alb_target_group" "order_app" {
-  name        = "${var.container_order_name}-target-group"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
-  target_type = "ip"
+# resource "aws_alb_target_group" "order_app" {
+#   name        = "${var.container_order_name}-target-group"
+#   port        = 80
+#   protocol    = "HTTP"
+#   vpc_id      = aws_vpc.main.id
+#   target_type = "ip"
 
-  health_check {
-    healthy_threshold   = "3"
-    interval            = "30"
-    protocol            = "HTTP"
-    matcher             = "200"
-    timeout             = "3"
-    path                = var.health_check_path
-    unhealthy_threshold = "2"
-  }
-}
+#   health_check {
+#     healthy_threshold   = "3"
+#     interval            = "30"
+#     protocol            = "HTTP"
+#     matcher             = "200"
+#     timeout             = "3"
+#     path                = var.health_check_path
+#     unhealthy_threshold = "2"
+#   }
+# }
 
 resource "aws_alb_target_group" "product_app" {
   name        = "${var.container_product_name}-target-group"
@@ -83,14 +83,14 @@ resource "aws_alb_listener" "product_app" {
   }
 }
 
-resource "aws_alb_listener" "order_app" {
-  load_balancer_arn = aws_alb.main.id
-  port              = var.dict_port_app["order"]
-  protocol          = "HTTP"
+# resource "aws_alb_listener" "order_app" {
+#   load_balancer_arn = aws_alb.main.id
+#   port              = var.dict_port_app["order"]
+#   protocol          = "HTTP"
 
-  default_action {
-    target_group_arn = aws_alb_target_group.order_app.id
-    type             = "forward"
-  }
-}
+#   default_action {
+#     target_group_arn = aws_alb_target_group.order_app.id
+#     type             = "forward"
+#   }
+# }
 
