@@ -58,7 +58,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
       }
     }
   ])
-  depends_on = [aws_alb.main]
+  depends_on = [aws_alb.alb_conta_app]
 }
 
 resource "aws_ecs_service" "conta-service-main" {
@@ -80,7 +80,7 @@ resource "aws_ecs_service" "conta-service-main" {
     container_port   = var.dict_port_app["conta"]
   }
 
-  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.main, aws_db_instance.db_instance]
+  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.alb_conta_app, aws_db_instance.db_instance]
 }
 
 
@@ -137,7 +137,7 @@ resource "aws_ecs_task_definition" "product-task-app" {
       }
     }
   ])
-  depends_on = [aws_alb.main]
+  depends_on = [aws_alb.alb_product_app]
 }
 
 resource "aws_ecs_service" "product-service-main" {
@@ -159,7 +159,7 @@ resource "aws_ecs_service" "product-service-main" {
     container_port   = var.dict_port_app["product"]
   }
 
-  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.main, aws_db_instance.db_instance]
+  depends_on = [aws_alb_listener.conta_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.alb_product_app, aws_db_instance.db_instance]
 }
 
 

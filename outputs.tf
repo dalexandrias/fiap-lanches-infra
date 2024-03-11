@@ -1,7 +1,11 @@
 # outputs.tf
 
-output "alb_hostname" {
-  value = aws_alb.main.dns_name
+output "alb_hostname_conta" {
+  value = aws_alb.alb_conta_app.name
+}
+
+output "alb_hostname_product" {
+  value = aws_alb.alb_product_app.name
 }
 
 # output "dns_broker" {
