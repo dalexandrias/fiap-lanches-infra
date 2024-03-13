@@ -1,9 +1,6 @@
 # alb.tf
 
-#-----------------------------------------------------------
-# Fiap-lanches-Conta-api
-#-----------------------------------------------------------
-resource "aws_alb" "alb_conta_app" {
+resource "aws_alb" "conta_app" {
   name            = "${var.container_conta_name}-load-balancer"
   subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.lb.id]
@@ -29,7 +26,7 @@ resource "aws_alb_target_group" "conta_app" {
 
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "conta_app" {
-  load_balancer_arn = aws_alb.alb_conta_app.id
+  load_balancer_arn = aws_alb.conta_app.id
   port              = var.dict_port_app["conta"]
   protocol          = "HTTP"
 
@@ -39,10 +36,7 @@ resource "aws_alb_listener" "conta_app" {
   }
 }
 
-#-----------------------------------------------------------
-# Fiap-lanches-Product-api
-#-----------------------------------------------------------
-resource "aws_alb" "alb_product_app" {
+resource "aws_alb" "product_app" {
   name            = "${var.container_product_name}-load-balancer"
   subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.lb.id]
@@ -67,7 +61,7 @@ resource "aws_alb_target_group" "product_app" {
 }
 
 resource "aws_alb_listener" "product_app" {
-  load_balancer_arn = aws_alb.alb_product_app.id
+  load_balancer_arn = aws_alb.product_app.id
   port              = var.dict_port_app["product"]
   protocol          = "HTTP"
 
@@ -76,15 +70,6 @@ resource "aws_alb_listener" "product_app" {
     type             = "forward"
   }
 }
-
-#-----------------------------------------------------------
-# Fiap-lanches-Order-api
-#-----------------------------------------------------------
-# resource "aws_alb" "alb_order_app" {
-#   name            = "${var.container_order_name}-load-balancer"
-#   subnets         = aws_subnet.public.*.id
-#   security_groups = [aws_security_group.lb.id]
-# }
 
 # resource "aws_alb_target_group" "order_app" {
 #   name        = "${var.container_order_name}-target-group"
@@ -105,7 +90,7 @@ resource "aws_alb_listener" "product_app" {
 # }
 
 # resource "aws_alb_listener" "order_app" {
-#   load_balancer_arn = aws_alb.alb_order_app.id
+#   load_balancer_arn = aws_alb.main.id
 #   port              = var.dict_port_app["order"]
 #   protocol          = "HTTP"
 
@@ -114,4 +99,3 @@ resource "aws_alb_listener" "product_app" {
 #     type             = "forward"
 #   }
 # }
-
