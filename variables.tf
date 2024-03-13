@@ -20,6 +20,11 @@ variable "container_product_name" {
   type    = string
 }
 
+variable "container_payment_name" {
+  default = "payment-app"
+  type    = string
+}
+
 variable "container_order_name" {
   default = "order-app"
   type    = string
@@ -40,7 +45,8 @@ variable "dict_app_image" {
   default = {
     conta   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest",
     product = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-product:latest",
-    order   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-order:latest"
+    order   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-order:latest",
+    payment = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-payment:latest"
   }
   type = map(string)
 }
@@ -50,7 +56,8 @@ variable "dict_port_app" {
   default = {
     conta   = 8085,
     product = 8082,
-    order   = 8081
+    order   = 8081,
+    payment = 8084
   }
   type = map(number)
 }

@@ -55,12 +55,19 @@ resource "aws_security_group" "ecs_tasks" {
     security_groups = [aws_security_group.lb.id]
   }
 
-  # ingress {
-  #   protocol        = "tcp"
-  #   from_port       = var.dict_port_app["order"]
-  #   to_port         = var.dict_port_app["order"]
-  #   security_groups = [aws_security_group.lb.id]
-  # }
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.dict_port_app["order"]
+    to_port         = var.dict_port_app["order"]
+    security_groups = [aws_security_group.lb.id]
+  }
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.dict_port_app["payment"]
+    to_port         = var.dict_port_app["payment"]
+    security_groups = [aws_security_group.lb.id]
+  }
 
   egress {
     protocol    = "-1"
