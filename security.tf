@@ -103,6 +103,43 @@ resource "aws_security_group" "database_security_group" {
   depends_on = [aws_security_group.ecs_tasks]
 }
 
+resource "aws_security_group" "ec2_mongo_db_security_group" {
+  name        = "${var.app_name}-mongo-db-sg"
+  description = "Security group for EC2 instance"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "document_db_mongo_security_group" {
+  name        = "${var.app_name}-document-db-mongo-sg"
+  description = "Security group for documentdb"
+  vpc_id      = aws_vpc.main.id
+  ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "kafka_security_group" {
   name        = "${var.app_name}-kafka-sg"
   description = "Liberacao da porta 9092 para acesso ao kafka"

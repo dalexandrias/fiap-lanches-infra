@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
         },
         {
           "name" : "SPRING_DATASOURCE_URL",
-          "value" : "jdbc:postgresql://${aws_db_instance.db_instance.endpoint}/fiaplanches"
+          "value" : "mongodb://${aws_docdb_cluster.document_db_cluster.master_username}:${aws_docdb_cluster.document_db_cluster.master_password}@${aws_docdb_cluster.document_db_cluster.endpoint}:${aws_docdb_cluster.document_db_cluster.port}/fiap-lanches-client"
         },
         {
           "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
