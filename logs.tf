@@ -37,6 +37,15 @@ resource "aws_cloudwatch_log_group" "fiap_lanches_order_log_group" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "fiap_lanches_kitchen_log_group" {
+  name              = "/ecs/${var.container_kitchen_name}"
+  retention_in_days = 30
+
+  tags = {
+    Name = "${var.container_kitchen_name}-log-group"
+  }
+}
+
 resource "aws_cloudwatch_log_stream" "fiap_lanches_conta_log_stream" {
   name           = "${var.app_name}-log-stream"
   log_group_name = aws_cloudwatch_log_group.fiap_lanches_conta_log_group.name

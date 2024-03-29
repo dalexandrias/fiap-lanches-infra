@@ -30,6 +30,11 @@ variable "container_order_name" {
   type    = string
 }
 
+variable "container_kitchen_name" {
+  default = "kitchen-app"
+  type    = string
+}
+
 variable "ecs_task_execution_role_name" {
   description = "ECS task execution role name"
   default     = "myEcsTaskExecutionRole"
@@ -46,7 +51,8 @@ variable "dict_app_image" {
     conta   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-conta:latest",
     product = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-product:latest",
     order   = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-order:latest",
-    payment = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-payment:latest"
+    payment = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-payment:latest",
+    kitchen = "516194196157.dkr.ecr.us-east-1.amazonaws.com/fiap-lanches-cozinha:latest"
   }
   type = map(string)
 }
@@ -57,7 +63,8 @@ variable "dict_port_app" {
     conta   = 8085,
     product = 8082,
     order   = 8081,
-    payment = 8084
+    payment = 8084,
+    kitchen = 8086
   }
   type = map(number)
 }
