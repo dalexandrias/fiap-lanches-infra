@@ -10,9 +10,9 @@ resource "aws_msk_configuration" "kafka_config" {
   kafka_versions    = ["3.5.1"]
   name              = "${var.app_name}-config"
   server_properties = <<EOF
-auto.create.topics.enable = true
-delete.topic.enable = true
-EOF
+  auto.create.topics.enable = true
+  delete.topic.enable = true
+  EOF
 }
 
 resource "aws_msk_cluster" "kafka" {

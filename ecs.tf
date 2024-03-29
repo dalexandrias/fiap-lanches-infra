@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
         },
         {
           "name" : "SPRING_DATA_MONGODB_URI",
-          "value" : "mongodb://${aws_docdb_cluster.document_db_cluster.master_username}:${aws_docdb_cluster.document_db_cluster.master_password}@${aws_docdb_cluster.document_db_cluster.endpoint}:${aws_docdb_cluster.document_db_cluster.port}/fiap-lanches-client"
+          "value" : "mongodb://${aws_docdb_cluster.document_db_cluster.master_username}:${aws_docdb_cluster.document_db_cluster.master_password}@${aws_docdb_cluster.document_db_cluster.endpoint}:${aws_docdb_cluster.document_db_cluster.port}/fiap-lanches-client?tls=false&replicaSet=rs&readPreference=secondaryPreferred&retryWrites=false"
         },
         {
           "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
@@ -295,7 +295,7 @@ resource "aws_ecs_task_definition" "payment-task-app" {
       }
     }
   ])
-  depends_on = [aws_alb.main, aws_db_instance.db_instance]
+  depends_on = [aws_msk_cluster.kafka, aws_db_instance.db_instance]
 }
 
 resource "aws_ecs_service" "payment-service-main" {
@@ -311,13 +311,7 @@ resource "aws_ecs_service" "payment-service-main" {
     assign_public_ip = true
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.payment_app.id
-    container_name   = var.container_payment_name
-    container_port   = var.dict_port_app["payment"]
-  }
-
-  depends_on = [aws_alb_listener.payment_app, aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb.main, aws_db_instance.db_instance]
+  depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role, aws_db_instance.db_instance, aws_msk_cluster.kafka]
 }
 
 #-----------------------------------------------------------
