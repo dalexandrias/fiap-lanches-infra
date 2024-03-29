@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
           "value" : "fiaplanches123"
         },
         {
-          "name" : "SPRING_DATASOURCE_URL",
+          "name" : "SPRING_DATA_MONGODB_URI",
           "value" : "mongodb://${aws_docdb_cluster.document_db_cluster.master_username}:${aws_docdb_cluster.document_db_cluster.master_password}@${aws_docdb_cluster.document_db_cluster.endpoint}:${aws_docdb_cluster.document_db_cluster.port}/fiap-lanches-client"
         },
         {
@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "conta-task-app" {
       }
     }
   ])
-  depends_on = [aws_alb.main]
+  depends_on = [aws_alb.main, aws_docdb_cluster.document_db_cluster, aws_docdb_cluster_instance.document_db_instance]
 }
 
 resource "aws_ecs_service" "conta-service-main" {
@@ -135,7 +135,7 @@ resource "aws_ecs_task_definition" "product-task-app" {
       }
     }
   ])
-  depends_on = [aws_alb.main]
+  depends_on = [aws_alb.main, aws_db_instance.db_instance]
 }
 
 resource "aws_ecs_service" "product-service-main" {
@@ -217,7 +217,7 @@ resource "aws_ecs_task_definition" "payment-task-app" {
       }
     }
   ])
-  depends_on = [aws_alb.main]
+  depends_on = [aws_alb.main, aws_db_instance.db_instance]
 }
 
 resource "aws_ecs_service" "payment-service-main" {
@@ -307,7 +307,7 @@ resource "aws_ecs_task_definition" "order-task-app" {
       }
     }
   ])
-  depends_on = [aws_alb.main, aws_msk_cluster.kafka]
+  depends_on = [aws_alb.main, aws_msk_cluster.kafka, aws_db_instance.db_instance]
 }
 
 resource "aws_ecs_service" "order-service-main" {
