@@ -1,7 +1,7 @@
 # alb.tf
 
 resource "aws_alb" "main" {
-  name            = "${var.container_conta_name}-load-balancer"
+  name            = "${var.app_name}-load-balancer"
   subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.lb.id]
 }

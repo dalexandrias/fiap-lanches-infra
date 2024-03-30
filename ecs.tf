@@ -109,20 +109,16 @@ resource "aws_ecs_task_definition" "kitchen-task-app" {
       "essential" : true,
       "environment" : [
         {
-          "name" : "SPRING_DATASOURCE_USERNAME",
-          "value" : "fiap_lanches"
+          "name" : "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+          "value" : "${aws_msk_cluster.kafka.bootstrap_brokers}"
         },
         {
-          "name" : "SPRING_DATASOURCE_PASSWORD",
-          "value" : "fiaplanches123"
+          "name" : "KAFKA_TOPIC_PRODUCER_ORDER",
+          "value" : "fiap-lanches-order"
         },
         {
-          "name" : "SPRING_DATA_MONGODB_URI",
-          "value" : "mongodb://${aws_docdb_cluster.document_db_cluster.master_username}:${aws_docdb_cluster.document_db_cluster.master_password}@${aws_docdb_cluster.document_db_cluster.endpoint}:${aws_docdb_cluster.document_db_cluster.port}/fiap-lanches-client"
-        },
-        {
-          "name" : "SPRING_JPA_HIBERNATE_DDL_AUTO",
-          "value" : "create"
+          "name" : "REST_ORDER_ENDPOINT",
+          "value" : "http://${aws_alb.main.dns_name}:8081/v1/order"
         }
       ],
       "logConfiguration" : {

@@ -3,13 +3,13 @@ resource "tls_private_key" "service" {
   rsa_bits  = 4096
 }
 
-resource "local_file" "service_private_key" {
-  content  = tls_private_key.service.private_key_pem
-  filename = aws_key_pair.ssh_keypair.key_name
-  provisioner "local-exec" {
-    command = "chmod 400 ${aws_key_pair.ssh_keypair.key_name}"
-  }
-}
+# resource "local_file" "service_private_key" {
+#   content  = tls_private_key.service.private_key_pem
+#   filename = aws_key_pair.ssh_keypair.key_name
+#   provisioner "local-exec" {
+#     command = "chmod 400 ${aws_key_pair.ssh_keypair.key_name}"
+#   }
+# }
 
 resource "aws_key_pair" "ssh_keypair" {
   key_name   = "${var.app_name}-key-pair-ec2"
